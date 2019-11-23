@@ -129,7 +129,7 @@ class XtecSwaggerAutoSchema(SwaggerAutoSchema):
         # remove security lock from unauthenticated views
         try:
             perms = self.view.get_permissions()
-            if not permissions or all(isinstance(perm, self.anon_permission_classes) for perm in perms):
+            if perms and all(isinstance(perm, self.anon_permission_classes) for perm in perms):
                 return []
         except Exception:
             pass
