@@ -56,6 +56,8 @@
                 </div>
                 <hr>
                 <span class="total">Total: </span><span style="font-size: x-large">{{ total }} RON</span>
+                <br><br>
+                <button class="button button__primary" type='submit' @click="placeOrder()">Place order</button>
               </div>
             </div>
           </div>
@@ -128,6 +130,16 @@
                     console.log(err);
                 })
             },
+            placeOrder() {
+                axios({
+                    method: 'post',
+                    url: 'api/orders/place/'
+                }).then(resp => {
+                    console.log("order placed");
+                }).catch(err => {
+                    console.log(err);
+                })
+            }
         }
     }
 </script>
