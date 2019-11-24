@@ -7,9 +7,18 @@ from main.models import CreatedModifiedMixin
 from store.models import StoreProfile, Product
 
 
+order_status_choices = [
+    ('pending', 'Pending'),
+    ('processing', 'Processing'),
+    ('delivery', 'Delivery'),
+    ('finished', 'Finished'),
+]
+
+
 class Order(CreatedModifiedMixin, models.Model):
     buyer = models.ForeignKey(StoreProfile, on_delete=models.PROTECT, related_name='orders')
     products = models.ManyToManyField(Product, through='OrderItem', related_name='orders')
+    status = models.CharField(max_length=30, choices=order_status_choices)
 
     def __str__(self):
         return f'Order #{self.id} by {self.buyer} at {self.created}'
