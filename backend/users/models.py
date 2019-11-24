@@ -86,7 +86,7 @@ class User(AbstractUser):
 
     def __str__(self):
         if self.first_name or self.last_name:
-            return self.get_full_name()
+            return f'{self.email} <{self.get_full_name()}>'
         elif self.username:
             return self.username
         else:

@@ -89,6 +89,42 @@ paths:
             $ref: '#/definitions/GenericError'
       tags:
         - orders
+  /orders/history/:
+    get:
+      operationId: ordersHistoryList
+      description: ''
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Order'
+        '401':
+          description: Authentication credentials were invalid or absent.
+          schema:
+            $ref: '#/definitions/GenericError'
+      tags:
+        - orders
+  /orders/place/:
+    post:
+      operationId: placeOrder
+      description: Places orders for all products currently in the cart.
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Order'
+        '401':
+          description: Authentication credentials were invalid or absent.
+          schema:
+            $ref: '#/definitions/GenericError'
+      tags:
+        - orders
   /store/categories/:
     get:
       operationId: storeCategoriesList
@@ -113,7 +149,32 @@ paths:
     get:
       operationId: storeProductsList
       description: ''
-      parameters: []
+      parameters:
+        - name: category
+          in: query
+          description: ''
+          required: false
+          type: string
+        - name: city
+          in: query
+          description: ''
+          required: false
+          type: string
+        - name: min_price
+          in: query
+          description: ''
+          required: false
+          type: number
+        - name: max_price
+          in: query
+          description: ''
+          required: false
+          type: number
+        - name: sort
+          in: query
+          description: ''
+          required: false
+          type: string
       responses:
         '200':
           description: ''
@@ -196,6 +257,15 @@ paths:
                   format: decimal
                 quantity:
                   type: integer
+                  minimum: 1
+                created:
+                  type: string
+                  format: date-time
+                  readOnly: true
+                modified:
+                  type: string
+                  format: date-time
+                  readOnly: true
         '401':
           description: Authentication credentials were invalid or absent.
           schema:
@@ -287,6 +357,15 @@ paths:
                 format: decimal
               quantity:
                 type: integer
+                minimum: 1
+              created:
+                type: string
+                format: date-time
+                readOnly: true
+              modified:
+                type: string
+                format: date-time
+                readOnly: true
               description:
                 type: string
                 maxLength: 4096
@@ -372,6 +451,15 @@ paths:
                 format: decimal
               quantity:
                 type: integer
+                minimum: 1
+              created:
+                type: string
+                format: date-time
+                readOnly: true
+              modified:
+                type: string
+                format: date-time
+                readOnly: true
               description:
                 type: string
                 maxLength: 4096
@@ -477,6 +565,15 @@ paths:
                 format: decimal
               quantity:
                 type: integer
+                minimum: 1
+              created:
+                type: string
+                format: date-time
+                readOnly: true
+              modified:
+                type: string
+                format: date-time
+                readOnly: true
               description:
                 type: string
                 maxLength: 4096
@@ -586,6 +683,15 @@ paths:
                 format: decimal
               quantity:
                 type: integer
+                minimum: 1
+              created:
+                type: string
+                format: date-time
+                readOnly: true
+              modified:
+                type: string
+                format: date-time
+                readOnly: true
               description:
                 type: string
                 maxLength: 4096
@@ -671,6 +777,15 @@ paths:
                 format: decimal
               quantity:
                 type: integer
+                minimum: 1
+              created:
+                type: string
+                format: date-time
+                readOnly: true
+              modified:
+                type: string
+                format: date-time
+                readOnly: true
               description:
                 type: string
                 maxLength: 4096
@@ -1000,8 +1115,18 @@ definitions:
             format: decimal
           quantity:
             type: integer
+            minimum: 1
+          created:
+            type: string
+            format: date-time
+            readOnly: true
+          modified:
+            type: string
+            format: date-time
+            readOnly: true
       quantity:
         type: integer
+        minimum: 1
   GenericError:
     title: Generic API Error
     required:
@@ -1039,6 +1164,132 @@ definitions:
         type: integer
       quantity:
         type: integer
+        minimum: 1
+  OrderItem:
+    required:
+      - unit
+      - quantity
+      - subtotal
+    type: object
+    properties:
+      product:
+        type: string
+        readOnly: true
+      category:
+        type: string
+        readOnly: true
+      unit:
+        type: string
+        maxLength: 10
+        minLength: 1
+      quantity:
+        type: integer
+        minimum: 1
+      subtotal:
+        type: string
+        format: decimal
+  Order:
+    required:
+      - buyer
+      - seller
+    type: object
+    properties:
+      buyer:
+        type: object
+        properties:
+          email:
+            type: string
+            format: email
+            pattern: ^\S*$
+            readOnly: true
+            maxLength: 254
+            minLength: 1
+          firstName:
+            type: string
+            maxLength: 30
+          lastName:
+            type: string
+            maxLength: 150
+          id:
+            type: integer
+            readOnly: true
+          isSelf:
+            type: boolean
+            readOnly: true
+          phone:
+            type: string
+            format: phone
+            pattern: ^\+?(?:[0-9]\s*){8,}$
+          city:
+            type: string
+            maxLength: 255
+            minLength: 1
+          address:
+            type: string
+            maxLength: 512
+            minLength: 1
+          personType:
+            type: string
+            enum:
+              - private
+              - company
+          sellerType:
+            type: string
+            enum:
+              - private
+              - company
+      seller:
+        type: object
+        properties:
+          email:
+            type: string
+            format: email
+            pattern: ^\S*$
+            readOnly: true
+            maxLength: 254
+            minLength: 1
+          firstName:
+            type: string
+            maxLength: 30
+          lastName:
+            type: string
+            maxLength: 150
+          id:
+            type: integer
+            readOnly: true
+          isSelf:
+            type: boolean
+            readOnly: true
+          phone:
+            type: string
+            format: phone
+            pattern: ^\+?(?:[0-9]\s*){8,}$
+          city:
+            type: string
+            maxLength: 255
+            minLength: 1
+          address:
+            type: string
+            maxLength: 512
+            minLength: 1
+          personType:
+            type: string
+            enum:
+              - private
+              - company
+          sellerType:
+            type: string
+            enum:
+              - private
+              - company
+      items:
+        type: array
+        items:
+          $ref: '#/definitions/OrderItem'
+        readOnly: true
+      totalPrice:
+        type: string
+        readOnly: true
   CategoryFlat:
     required:
       - name
@@ -1143,6 +1394,15 @@ definitions:
               format: decimal
             quantity:
               type: integer
+              minimum: 1
+            created:
+              type: string
+              format: date-time
+              readOnly: true
+            modified:
+              type: string
+              format: date-time
+              readOnly: true
   StoreProfileCreate:
     required:
       - firstName
