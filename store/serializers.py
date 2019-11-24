@@ -1,6 +1,8 @@
 from django.db import transaction
 from rest_framework import serializers
+from rest_framework.relations import SlugRelatedField
 from rest_framework.serializers import ModelSerializer
+from rest_framework_recursive.fields import RecursiveField
 
 from main.serializers import FlatNestedSerializerMixin
 from store.models import StoreProfile, Product, Category
@@ -77,3 +79,19 @@ class ProductListSerializer(ProductNestedSerializer):
 class ProductDetailSerializer(ProductListSerializer):
     class Meta(ProductListSerializer.Meta):
         fields = ProductListSerializer.Meta.fields + ('description',)
+
+
+class CategorySerializer(ModelSerializer):
+    children = RecursiveField(many=True)
+
+    class Meta:
+        model = Category
+        fields = ('name', 'children')
+
+
+class CategoryFlatSerializer(ModelSerializer):
+    parent = SlugRelatedField('slug', read_only=True)
+
+    class Meta:
+        model = Category
+        fields = ('name', 'parent')

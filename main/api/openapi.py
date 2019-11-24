@@ -68,8 +68,11 @@ class NoSchemaTitleInspector(FieldInspector):
     def process_result(self, result, method_name, obj, **kwargs):
         # remove the `title` attribute of all Schema objects
         if isinstance(result, openapi.Schema.OR_REF):
-            schema = openapi.resolve_ref(result, self.components)
-            schema.pop('title', None)
+            try:
+                schema = openapi.resolve_ref(result, self.components)
+                schema.pop('title', None)
+            except Exception:
+                pass
 
         return result
 

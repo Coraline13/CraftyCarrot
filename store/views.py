@@ -1,13 +1,15 @@
-from django.shortcuts import render
-from rest_framework.generics import GenericAPIView, get_object_or_404
+from drf_yasg import openapi
+from drf_yasg.utils import swagger_auto_schema
+from rest_framework.generics import GenericAPIView, get_object_or_404, ListAPIView
 from rest_framework.mixins import UpdateModelMixin, RetrieveModelMixin, CreateModelMixin
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import ModelViewSet
+from str2bool import str2bool
 
-from store.models import StoreProfile, Product
+from store.models import StoreProfile, Product, Category
 from store.permissions import HasStoreProfile, IsOwnerOrReadOnly
 from store.serializers import StoreProfileSerializer, StoreProfileCreateSerializer, ProductListSerializer, \
-    ProductDetailSerializer
+    ProductDetailSerializer, CategorySerializer, CategoryFlatSerializer
 
 
 class OwnStoreProfileView(CreateModelMixin, RetrieveModelMixin, UpdateModelMixin, GenericAPIView):
@@ -68,3 +70,18 @@ class ProductViewSet(ModelViewSet):
         if self.is_read_only():
             return []
         return super().get_permissions()
+
+
+class CategoryListView(ListAPIView):
+    queryset = Category.objects.all()
+
+    @swagger_auto_schema(manual_parameters=[
+        openapi.Parameter(in_=openapi.IN_QUERY, name='flat', type=openapi.TYPE_BOOLEAN, required=False, default=True)
+    ])
+    def get(self, request, *args, **kwargs):
+        return super().get(request, *args, **kwargs)
+
+    def get_serializer_class(self):
+        if getattr(self, 'swagger_fake_view', False) or str2bool(self.request.query_params.get('flat', 'true')):
+            return CategoryFlatSerializer
+        return CategorySerializer
