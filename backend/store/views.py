@@ -6,6 +6,8 @@ from rest_framework.filters import OrderingFilter
 from rest_framework.generics import GenericAPIView, get_object_or_404, ListAPIView
 from rest_framework.mixins import UpdateModelMixin, RetrieveModelMixin, CreateModelMixin
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 from str2bool import str2bool
 
@@ -119,3 +121,9 @@ class CategoryListView(ListAPIView):
         if not str2bool(self.request.query_params.get('flat', 'true')):
             qs = qs.filter(parent__isnull=True)
         return qs
+
+
+class CityListView(APIView):
+    @swagger_auto_schema(responses={200: openapi.Schema(type=openapi.TYPE_ARRAY, items=openapi.Schema(type=openapi.TYPE_STRING))})
+    def get(self, request, *args, **kwargs):
+        return Response(Product.objects.values_list('seller__city', flat=True).distinct())

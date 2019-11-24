@@ -38,26 +38,43 @@
             </ul>
           </div>
           <div class="app__main">
+            <label for="category">Filer by category</label>
+            <select id="category" v-model="filter.category" v-on:change="getProducts">
+              <option value="">----</option>
+              <option v-for="category in categories" :value="category">
+                {{ category.name }}
+              </option>
+            </select>
+            <label for="city">Filer by seller city</label>
+            <select id="city" v-model="filter.city" v-on:change="getProducts">
+              <option value="">----</option>
+              <option v-for="city in cities" :value="city">
+                {{ city }}
+              </option>
+            </select>
+            <label for="sort">Sort by</label>
+            <select id="sort" v-model="filter.sort" v-on:change="getProducts">
+              <option value="-created">Most recently added</option>
+              <option value="created">Least recently added</option>
+              <option value="-unit_price">Price (descending)</option>
+              <option value="unit_price">Price (ascending)</option>
+            </select>
+            <!--                <div class="double">-->
+            <!--                  <div class="half">-->
+            <!--                    <label for="minPrice">Min price</label>-->
+            <!--                    <input type="text" id="minPrice" placeholder="50">-->
+            <!--                  </div>-->
+            <!--                  <div class="half">-->
+            <!--                    <label for="maxPrice">Max Price</label>-->
+            <!--                    <input type="text" id="maxPrice" placeholder="100">-->
+            <!--                  </div>-->
+            <!--                </div>-->
+            <br><hr><br><br>
             <div class="text-container">
               <div v-if="!products || !products.length">
                 <p>There are no products to show!</p>
               </div>
               <div v-else>
-                <label for="category">Filer by category</label>
-                <select id="category" v-model="category">
-                  <option v-for="category in categories" :value="category">{{ category.name }}</option>
-                </select>
-<!--                <div class="double">-->
-<!--                  <div class="half">-->
-<!--                    <label for="minPrice">Min price</label>-->
-<!--                    <input type="text" id="minPrice" placeholder="50">-->
-<!--                  </div>-->
-<!--                  <div class="half">-->
-<!--                    <label for="maxPrice">Max Price</label>-->
-<!--                    <input type="text" id="maxPrice" placeholder="100">-->
-<!--                  </div>-->
-<!--                </div>-->
-                <br><hr><br><br>
                 <div v-for="product in products">
                   <router-link class="product-card" :to="`/productdetails/${product.id}`">
                     <div class="product-title">
@@ -91,19 +108,55 @@
         data() {
             return {
                 products: [],
-                view: "list"
+                categories: [],
+                cities: [],
+                view: "list",
+                filter: {
+                    category: null,
+                    city: null,
+                    sort: null,
+                }
             }
         },
         mounted() {
             this.getProducts();
+            this.getCategories();
+            this.getCities();
         },
         methods: {
             getProducts() {
+                let params = {};
+                if (this.filter.category) {
+                    params.category = this.filter.category.slug;
+                }
+                if (this.filter.city) {
+                    params.city = this.filter.city;
+                }
+                if (this.filter.sort) {
+                    params.sort = this.filter.sort;
+                }
                 axios({
                     method: 'get',
-                    url: 'api/store/products/'
+                    url: 'api/store/products/',
+                    params: params,
                 }).then(resp => {
                     this.products = resp.data;
+                });
+            },
+            getCategories() {
+                axios({
+                    method: 'get',
+                    url: 'api/store/categories/?flat=true',
+                }).then(resp => {
+                    this.categories = resp.data;
+                });
+            },
+            getCities() {
+                axios({
+                    method: 'get',
+                    url: 'api/store/cities',
+                }).then(resp => {
+                    this.cities = resp.data;
                 });
             },
             addToCart(id) {
