@@ -16,9 +16,10 @@ order_status_choices = [
 
 
 class Order(CreatedModifiedMixin, models.Model):
-    buyer = models.ForeignKey(StoreProfile, on_delete=models.PROTECT, related_name='orders')
+    buyer = models.ForeignKey(StoreProfile, on_delete=models.PROTECT, related_name='buyer_orders')
+    seller = models.ForeignKey(StoreProfile, on_delete=models.PROTECT, related_name='seller_orders')
     products = models.ManyToManyField(Product, through='OrderItem', related_name='orders')
-    status = models.CharField(max_length=30, choices=order_status_choices)
+    status = models.CharField(max_length=30, choices=order_status_choices, default='pending')
 
     def __str__(self):
         return f'Order #{self.id} by {self.buyer} at {self.created}'
@@ -29,10 +30,10 @@ class OrderItem(models.Model):
     product = models.ForeignKey(Product, on_delete=models.PROTECT, related_name='+')
     quantity = models.PositiveIntegerField(validators=[MinValueValidator(1)])
     unit = models.CharField(max_length=10)
-    total_price = models.DecimalField(decimal_places=2, max_digits=10, validators=[MinValueValidator(Decimal('0.01'))])
+    subtotal = models.DecimalField(decimal_places=2, max_digits=10, validators=[MinValueValidator(Decimal('0.01'))])
 
     def __str__(self):
-        return f'{self.product}, {self.quantity} {self.unit} @ {self.total_price}'
+        return f'{self.product}, {self.quantity} {self.unit} @ {self.subtotal}'
 
     class Meta:
         unique_together = ('order', 'product')
