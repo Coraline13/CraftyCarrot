@@ -43,6 +43,21 @@
                 <p>There are no products to show!</p>
               </div>
               <div v-else>
+                <label for="category">Filer by category</label>
+                <select id="category" v-model="category">
+                  <option v-for="category in categories" :value="category">{{ category.name }}</option>
+                </select>
+<!--                <div class="double">-->
+<!--                  <div class="half">-->
+<!--                    <label for="minPrice">Min price</label>-->
+<!--                    <input type="text" id="minPrice" placeholder="50">-->
+<!--                  </div>-->
+<!--                  <div class="half">-->
+<!--                    <label for="maxPrice">Max Price</label>-->
+<!--                    <input type="text" id="maxPrice" placeholder="100">-->
+<!--                  </div>-->
+<!--                </div>-->
+                <br><hr><br><br>
                 <div v-for="product in products">
                   <router-link class="product-card" :to="`/productdetails/${product.id}`">
                     <div class="product-title">
