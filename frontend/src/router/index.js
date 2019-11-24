@@ -9,8 +9,8 @@ import Account from "@/components/Account"
 import Profile from '@/components/Profile'
 import Store from "../components/Store";
 import AddProduct from "../components/AddProduct";
-import EditProduct from "../components/EditProduct";
 import ProductDetails from "../components/ProductDetails";
+import Orders from "../components/Orders";
 
 Vue.use(Router);
 
@@ -45,7 +45,10 @@ let router = new Router({
     {
       path: '/addproduct',
       name: 'AddProduct',
-      component: AddProduct
+      component: AddProduct,
+      meta: {
+        requiresAuth: true
+      }
     },
     {
       path: '/productdetails/:id',
@@ -55,18 +58,29 @@ let router = new Router({
         requiresAuth: true
       }
     },
+    // {
+    //   path: '/editproduct/:id',
+    //   name: 'editproduct',
+    //   component: EditProduct,
+    //   meta: {
+    //     requiresAuth: true
+    //   }
+    // },
     {
-      path: '/editproduct/:id',
-      name: 'editproduct',
-      component: EditProduct,
+      path: '/cart',
+      name: 'Cart',
+      component: Cart,
       meta: {
         requiresAuth: true
       }
     },
     {
-      path: '/cart',
-      name: 'Cart',
-      component: Cart
+      path: '/orders',
+      name: 'Orders',
+      component: Orders,
+      meta: {
+        requiresAuth: true
+      }
     },
     {
       path: '/account',
