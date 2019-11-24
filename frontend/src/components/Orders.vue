@@ -94,7 +94,8 @@
 
                     let i;
                     this.total = 0;
-                    for (i = 0; i < this.orders; i++) {
+                    for (i = 0; i < this.orders.length; i++) {
+                        console.log("plm")
                         this.total += parseFloat(this.orders[i].totalPrice);
                         console.log("total" + total);
                     }
