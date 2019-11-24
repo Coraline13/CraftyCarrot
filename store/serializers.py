@@ -86,7 +86,7 @@ class CategorySerializer(ModelSerializer):
 
     class Meta:
         model = Category
-        fields = ('name', 'children')
+        fields = ('name', 'slug', 'children')
 
 
 class CategoryFlatSerializer(ModelSerializer):
@@ -94,4 +94,4 @@ class CategoryFlatSerializer(ModelSerializer):
 
     class Meta:
         model = Category
-        fields = ('name', 'parent')
+        fields = ('name', 'slug', 'parent')

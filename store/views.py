@@ -85,3 +85,9 @@ class CategoryListView(ListAPIView):
         if getattr(self, 'swagger_fake_view', False) or str2bool(self.request.query_params.get('flat', 'true')):
             return CategoryFlatSerializer
         return CategorySerializer
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+        if not str2bool(self.request.query_params.get('flat', 'true')):
+            qs = qs.filter(parent__isnull=True)
+        return qs
