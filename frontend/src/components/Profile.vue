@@ -34,12 +34,15 @@
               <li>
                 <router-link to="/cart">Cart</router-link>
               </li>
+              <li>
+                <router-link to="/orders">Orders</router-link>
+              </li>
             </ul>
           </div>
           <div class="app__main">
             <div class="text-container" v-if="profile !== null">
               <div>
-                <img class="profile-img" src="../assets/profile.svg">
+                <img class="profile-img" :src="gravatar()">
               </div>
               <form>
                 <div class="text-container">
@@ -146,6 +149,7 @@
 
 <script>
     import axios from 'axios'
+    import * as md5 from 'md5'
 
     export default {
         name: "Profile",
@@ -174,6 +178,9 @@
             this.loadProfile();
         },
         methods: {
+            gravatar() {
+                return `https://www.gravatar.com/avatar/${md5(this.profile.email.toLowerCase())}?s=400`;
+            },
             loadProfile() {
                 axios.get('api/store/profile/')
                     .then(response => {
