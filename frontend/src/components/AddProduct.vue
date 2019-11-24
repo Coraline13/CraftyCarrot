@@ -27,7 +27,7 @@
                 <router-link to="/profile">Profile</router-link>
               </li>
               <li>
-                <router-link class="vMenu--active" to="/chatbots">Products</router-link>
+                <router-link class="vMenu--active" to="">Products</router-link>
               </li>
               <li>
                 <router-link to="/cart">Cart</router-link>
@@ -173,17 +173,7 @@
                 }).then(resp => {
                     this.products = resp.data.products;
                 });
-            },
-            deleteProduct: function (id, index) {
-                axios.delete('api/store/products/' + id + '/')
-                    .then(resp => {
-                        this.products.splice(index, 1);
-                        console.log(this.products);
-                    })
-                    .catch((error) => {
-                        console.log(error);
-                    });
-            },
+            }
         }
     }
 </script>
