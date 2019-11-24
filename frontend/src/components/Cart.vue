@@ -138,6 +138,7 @@
                     method: 'post',
                     url: 'api/orders/place/'
                 }).then(resp => {
+                    this.$router.push('/orders');
                     console.log("order placed");
                 }).catch(err => {
                     console.log(err);

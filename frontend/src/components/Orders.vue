@@ -7,7 +7,7 @@
         <div class="container">
           <div class="page__header__content">
             <div class="page__header__content__inner" id='navConverter'>
-              <h1 class="page__header__title">Cart</h1>
+              <h1 class="page__header__title">Order history</h1>
             </div>
           </div>
         </div>
@@ -44,13 +44,21 @@
                 <div v-for="(order, index) in orders">
                   <div class="product-card">
                     <div class="product-title">
-                      {{ item.product.title }}
+                      Order no. {{ index + 1}}
                     </div>
                     <br>
-                    <b>Quantity: </b>{{ item.quantity }} {{ item.product.unit }}
-                    <b>Price: </b>{{ item.product.unitPrice }} RON / {{ item.product.unit }}
+                    <b>Buyer: </b>{{ order.buyer.firstName }} {{ order.buyer.lastName }}
+                    <br>
+                    <b>Seller: </b>{{ order.seller.firstName }} {{ order.seller.lastName }}
+                    <br>
+                    <b>Items: </b>
+                    <div v-for="item in items">
+                      <ul>
+                        <li>{{ item }}</li>
+                      </ul>
+                    </div>
                     <hr>
-                    {{ parseFloat(item.product.unitPrice) * parseFloat(item.quantity) }} RON
+                    Total price: {{ order.totalPrice }} RON
                   </div>
                 </div>
                 <hr>
@@ -85,6 +93,12 @@
                     url: 'api/orders/history/'
                 }).then(resp => {
                     this.orders = resp.data;
+
+                    let i;
+                    this.total = 0;
+                    for (i = 0; i < this.orders; i++) {
+                        this.total += parseFloat(this.orders[i].totalPrice);
+                    }
                 });
             },
         }

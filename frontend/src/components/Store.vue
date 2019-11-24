@@ -115,7 +115,7 @@
                         quantity: 1
                     }
                 }).then(resp => {
-                    this.$router.push('/cart')
+                    this.$router.push('/cart');
                 }).catch(err => {
                     console.log(err);
                 })
