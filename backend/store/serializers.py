@@ -1,3 +1,4 @@
+from django.core.exceptions import ImproperlyConfigured
 from django.db import transaction
 from rest_framework import serializers
 from rest_framework.relations import SlugRelatedField
@@ -9,21 +10,34 @@ from store.models import StoreProfile, Product, Category
 from users.serializers import UserSerializer
 
 
-class ProductNestedSerializer(ModelSerializer):
-    category = serializers.SlugRelatedField('slug', queryset=Category.objects.all())
-    category_name = serializers.ReadOnlyField(source='category.name')
+class SetOwnProfileMixin(serializers.Serializer):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.get_profile_field_name()
+
+    def get_profile_field_name(self):
+        try:
+            return getattr(self, 'Meta', None).profile_field_name
+        except AttributeError as e:
+            raise ImproperlyConfigured("must set Meta.profile_field_name or override get_profile_field_name()") from e
 
     def create(self, validated_data):
         user = self.context['request'].user
-        related_objects = {'seller': user.profile}
+        related_objects = {self.get_profile_field_name(): user.profile}
         validated_data.update(related_objects)
         return super().create(validated_data)
 
+
+class ProductNestedSerializer(SetOwnProfileMixin, ModelSerializer):
+    category = serializers.SlugRelatedField('slug', queryset=Category.objects.all())
+    category_name = serializers.ReadOnlyField(source='category.name')
+
     class Meta:
         model = Product
-        fields = ('category', 'category_name', 'seller', 'title', 'unit', 'unit_price', 'quantity')
-        read_only_fields = ('seller',)
+        fields = ('id', 'category', 'category_name', 'seller', 'title', 'unit', 'unit_price', 'quantity')
+        read_only_fields = ('id', 'seller',)
         ref_name = None
+        profile_field_name = 'seller'
 
 
 class StoreProfileSerializer(FlatNestedSerializerMixin, ModelSerializer):
@@ -53,8 +67,8 @@ class StoreProfileSerializer(FlatNestedSerializerMixin, ModelSerializer):
     class Meta:
         model = StoreProfile
         user_fields = ('email', 'first_name', 'last_name')
-        fields = user_fields + ('is_self', 'phone', 'city', 'address', 'person_type', 'seller_type', 'products')
-        read_only_fields = ('email',)
+        fields = user_fields + ('id', 'is_self', 'phone', 'city', 'address', 'person_type', 'seller_type', 'products')
+        read_only_fields = ('id', 'email',)
         flatten_fields = {'user': user_fields}
         extra_kwargs = {k: {'required': False} for k in fields}
 

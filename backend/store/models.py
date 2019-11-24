@@ -3,6 +3,7 @@ from django.conf import settings
 from django.db import models
 from phonenumber_field.modelfields import PhoneNumberField
 
+from main.models import CreatedModifiedMixin
 
 person_type_choices = [
     ('private', 'Private'),
@@ -10,7 +11,7 @@ person_type_choices = [
 ]
 
 
-class StoreProfile(models.Model):
+class StoreProfile(CreatedModifiedMixin, models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="profile")
     phone = PhoneNumberField()
     city = models.CharField(max_length=255)
@@ -36,7 +37,7 @@ class Category(SortableMixin, models.Model):
         return f'{self.name} ({self.slug})'
 
 
-class Product(models.Model):
+class Product(CreatedModifiedMixin, models.Model):
     seller = models.ForeignKey('StoreProfile', on_delete=models.CASCADE, related_name='products')
     category = models.ForeignKey('Category', on_delete=models.PROTECT, related_name='products')
     title = models.CharField(max_length=255)

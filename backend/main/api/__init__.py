@@ -10,10 +10,13 @@ from rest_framework.documentation import include_docs_urls
 from rest_framework.generics import RetrieveUpdateAPIView, RetrieveUpdateDestroyAPIView, UpdateAPIView
 from rest_framework.routers import SimpleRouter
 
-del UpdateAPIView.put
-del RetrieveUpdateAPIView.put
-del RetrieveUpdateDestroyAPIView.put
-SimpleRouter.routes[2].mapping.pop('put', None)
+try:
+    del UpdateAPIView.put
+    del RetrieveUpdateAPIView.put
+    del RetrieveUpdateDestroyAPIView.put
+    SimpleRouter.routes[2].mapping.pop('put', None)
+except AttributeError:
+    pass
 
 serializers.ModelSerializer.serializer_field_mapping[PhoneNumberModelField] = PhoneNumberSerializerField
 
@@ -54,4 +57,5 @@ urlpatterns = [
 
     path('user/', include('users.urls')),
     path('store/', include('store.urls')),
+    path('orders/', include('orders.urls')),
 ]
