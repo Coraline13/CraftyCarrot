@@ -34,7 +34,8 @@ class ProductNestedSerializer(SetOwnProfileMixin, ModelSerializer):
 
     class Meta:
         model = Product
-        fields = ('id', 'category', 'category_name', 'seller', 'title', 'unit', 'unit_price', 'quantity')
+        fields = ('id', 'category', 'category_name', 'seller', 'title', 'unit',
+                  'unit_price', 'quantity', 'created', 'modified')
         read_only_fields = ('id', 'seller',)
         ref_name = None
         profile_field_name = 'seller'
