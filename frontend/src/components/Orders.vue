@@ -52,11 +52,9 @@
                     <b>Seller: </b>{{ order.seller.firstName }} {{ order.seller.lastName }}
                     <br>
                     <b>Items: </b>
-                    <div v-for="item in items">
                       <ul>
-                        <li>{{ item }}</li>
+                        <li v-for="item in order.items">{{ item.product }}, {{ item.quantity }} {{ item.unit }}</li>
                       </ul>
-                    </div>
                     <hr>
                     Total price: {{ order.totalPrice }} RON
                   </div>
@@ -98,6 +96,7 @@
                     this.total = 0;
                     for (i = 0; i < this.orders; i++) {
                         this.total += parseFloat(this.orders[i].totalPrice);
+                        console.log("total" + total);
                     }
                 });
             },
