@@ -71,7 +71,7 @@ class StoreProfileSerializer(FlatNestedSerializerMixin, ModelSerializer):
         model = StoreProfile
         user_fields = ('email', 'first_name', 'last_name')
         fields = user_fields + ('id', 'is_self', 'phone', 'city', 'address', 'person_type', 'seller_type', 'products')
-        read_only_fields = ('id', 'email',)
+        read_only_fields = ('id', 'email', 'products')
         flatten_fields = {'user': user_fields}
         extra_kwargs = {k: {'required': False} for k in fields}
 

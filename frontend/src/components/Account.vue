@@ -39,7 +39,7 @@
           </div>
           <div class="app__main">
             <div class="text-container">
-              <h3 class="app__main__title">Hi, {{ profile.firstName }}!</h3>
+              <h3 class="app__main__title" v-if="profile">Hi, {{ profile.firstName }}!</h3>
               <p>Here are a few interesting facts about your account:</p>
 
               <div class="expanded landing__section">

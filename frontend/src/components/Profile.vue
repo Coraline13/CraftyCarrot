@@ -40,7 +40,7 @@
             </ul>
           </div>
           <div class="app__main">
-            <div class="text-container" v-if="profile !== null">
+            <div class="text-container" v-if="fetched && !edit">
               <div>
                 <img class="profile-img" :src="gravatar()">
               </div>
@@ -53,7 +53,7 @@
                   <div class="half">
                     <h3 class="app__main__title">First name</h3>
                   </div>
-                  <div class="half">
+                  <div class="half" v-on:click="startEdit">
                     <svg class="edit-img" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg"
                          xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
                          viewBox="0 0 401 401" style="enable-background:new 0 0 401 401;" xml:space="preserve">
@@ -107,36 +107,37 @@
                 <div class="double">
                   <div class="half">
                     <label for="firstName">First name</label>
-                    <input type="text" id="firstName" placeholder="Veg" v-model="firstName">
+                    <input type="text" id="firstName" placeholder="Veg" v-model="profile.firstName">
                     <p v-if="errors.firstName" class="error">{{ errors.firstName[0] }}</p>
                   </div>
                   <div class="half">
                     <label for="lastName">Last name</label>
-                    <input type="text" id="lastName" placeholder="McCarrot" v-model="lastName">
+                    <input type="text" id="lastName" placeholder="McCarrot" v-model="profile.lastName">
                   </div>
                 </div>
                 <label for='phoneNumber'>Phone number</label>
-                <input id='phoneNumber' placeholder="+40 7..." type="text" v-model="phone">
+                <input id='phoneNumber' placeholder="+40 7..." type="text" v-model="profile.phone">
                 <label for='city'>City</label>
-                <input id='city' placeholder="Manchester" type="text" v-model="city">
+                <input id='city' placeholder="Manchester" type="text" v-model="profile.city">
                 <label for='address'>Address</label>
-                <input id='address' placeholder="Marble Street, no. 42" type="text" v-model="address">
+                <input id='address' placeholder="Marble Street, no. 42" type="text" v-model="profile.address">
                 <div class="double">
                   <div class="half">
                     <label for='personType'>Buying as a</label>
-                    <select id="personType" v-model="personType">
+                    <select id="personType" v-model="profile.personType">
                       <option value="private">private</option>
                       <option value="company">company</option>
                     </select>
                   </div>
                   <div class="half">
                     <label for='sellerType'>Selling to</label>
-                    <select id="sellerType" v-model="sellerType">
+                    <select id="sellerType" v-model="profile.sellerType">
                       <option value="private">private</option>
                       <option value="company">company</option>
                     </select>
                   </div>
                 </div>
+                <p v-if="errors.nonFieldErrors" class="error">{{ errors.nonFieldErrors[0] }}</p>
                 <button class="button button__primary">Save</button>
               </form>
             </div>
@@ -155,14 +156,19 @@
         name: "Profile",
         data() {
             return {
-                profile: null,
-                firstName: '',
-                lastName: '',
-                phone: '',
-                city: '',
-                address: '',
-                personType: '',
-                sellerType: '',
+                fetched: false,
+                edit: false,
+                method: 'post',
+                profile: {
+                    email: '',
+                    firstName: '',
+                    lastName: '',
+                    phone: '',
+                    city: '',
+                    address: '',
+                    personType: '',
+                    sellerType: '',
+                },
                 errors: {
                     firstName: '',
                     lastName: '',
@@ -170,7 +176,8 @@
                     city: '',
                     address: '',
                     personType: '',
-                    sellerType: ''
+                    sellerType: '',
+                    nonFieldErrors: '',
                 }
             };
         },
@@ -181,38 +188,40 @@
             gravatar() {
                 return `https://www.gravatar.com/avatar/${md5(this.profile.email.toLowerCase())}?s=400`;
             },
+            startEdit() {
+                this.edit = true;
+                this.method = 'patch';
+            },
             loadProfile() {
                 axios.get('api/store/profile/')
                     .then(response => {
-                        this.profile = response.data;
+                        Object.assign(this.profile, response.data);
                     })
                     .catch(error => {
                         if (!error.response || error.response.status !== 404) {
                             throw error;
                         }
-                });
+
+                        this.edit = true;
+                    }).finally(() => this.fetched = true);
             },
             createProfile() {
-                if (this.firstName && this.lastName && this.phone && this.city && this.address && this.personType && this.sellerType) {
-                    axios({
-                        method: 'post',
-                        url: 'api/store/profile/',
-                        data: {
-                            firstName: this.firstName,
-                            lastName: this.lastName,
-                            phone: this.phone,
-                            city: this.city,
-                            address: this.address,
-                            personType: this.personType,
-                            sellerType: this.sellerType
-                        }
-                    }).then((resp) => {
-                        this.profile = resp.data;
-                    }).catch((error) => {
-                        console.log(error);
-                    });
-                }
-            }
+                let req = {...this.profile};
+                delete req.products;
+                axios({
+                    method: this.method,
+                    url: 'api/store/profile/',
+                    data: req,
+                }).then((resp) => {
+                    Object.assign(this.profile, resp.data);
+                    this.edit = false;
+                }).catch((error) => {
+                    console.log(error);
+                    if (error.response) {
+                        Object.assign(this.errors, error.response.data);
+                    }
+                });
+            },
         }
     }
 </script>
