@@ -28,6 +28,12 @@
               <li>
                 <router-link class="vMenu--active" to="/profile">Profile</router-link>
               </li>
+              <li>
+                <router-link to="/addproduct">Products</router-link>
+              </li>
+              <li>
+                <router-link to="/cart">Cart</router-link>
+              </li>
             </ul>
           </div>
           <div class="app__main">

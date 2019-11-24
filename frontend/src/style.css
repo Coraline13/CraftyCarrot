@@ -1782,7 +1782,7 @@ select::-ms-expand {
   }
 }
 
-.chatbot-card {
+.product-card {
   border: 1px solid var(--lines-color);
   width: 100%;
   -webkit-transition: 0.7s;
@@ -1795,13 +1795,24 @@ select::-ms-expand {
   background-color: var(--alternate-background-color);
 }
 
-.chatbot-card:hover {
+.product-card:hover {
   background-color: var(--white-color);
   border: 1px solid var(--accent-color);
 }
 
-.chatbot-title {
+.product-title {
   font-size: x-large;
+}
+
+.price {
+  color: var(--accent-color);
+  font-weight: bold;
+  font-size: medium;
+}
+
+.categ {
+  color: #666666;
+  font-style: italic;
 }
 
 .accent-text {

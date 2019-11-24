@@ -7,6 +7,10 @@ import Register from '@/components/Register'
 import Cart from '@/components/cart'
 import Account from "@/components/Account"
 import Profile from '@/components/Profile'
+import Store from "../components/Store";
+import AddProduct from "../components/AddProduct";
+import EditProduct from "../components/EditProduct";
+import ProductDetails from "../components/ProductDetails";
 
 Vue.use(Router);
 
@@ -32,6 +36,32 @@ let router = new Router({
       path: '/register',
       name: 'Register',
       component: Register
+    },
+    {
+      path: '/store',
+      name: 'Store',
+      component: Store
+    },
+    {
+      path: '/addproduct',
+      name: 'AddProduct',
+      component: AddProduct
+    },
+    {
+      path: '/productdetails/:id',
+      name: 'productdetails',
+      component: ProductDetails,
+      meta: {
+        requiresAuth: true
+      }
+    },
+    {
+      path: '/editproduct/:id',
+      name: 'editproduct',
+      component: EditProduct,
+      meta: {
+        requiresAuth: true
+      }
     },
     {
       path: '/cart',

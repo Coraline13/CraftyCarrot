@@ -11,7 +11,7 @@
               <p class="hero__text">CraftyCarrot is a platform that will make it easier for people who have been
                 harvesting their own vegetables to sell them.</p>
               <router-link class="button button__accent" to="/register">Try it now</router-link>
-              <router-link class="button hero__button" to="/pricing">Learn more</router-link>
+              <router-link class="button hero__button" to="/store">Learn more</router-link>
             </div>
           </div>
         </div>

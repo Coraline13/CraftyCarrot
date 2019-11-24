@@ -18,8 +18,11 @@
               <li v-if="isLoggedIn">
                 <router-link to="/account">Account</router-link>
               </li>
+              <li>
+                <router-link to="/store">Store</router-link>
+              </li>
               <li v-if="isLoggedIn">
-                <router-link to="/cart">Cart</router-link>
+                <router-link to="/cart">🛒 Cart</router-link>
               </li>
               <li v-if="isLoggedIn">
                 <a style="cursor: pointer;" @click="logout">Logout</a>
