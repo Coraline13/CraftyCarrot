@@ -11,7 +11,8 @@ from store.models import StoreProfile, Product, Category
 @admin.register(StoreProfile)
 class StoreProfileAdmin(RelatedFieldAdmin):
     list_filter = ('person_type', 'seller_type')
-    list_display = ('user__username', 'user__email', 'phone', 'person_type', 'seller_type', 'city', 'address')
+    list_display = ('__str__', 'user__username', 'user__email', 'phone',
+                    'person_type', 'seller_type', 'city', 'address')
 
 
 @admin.register(Product)

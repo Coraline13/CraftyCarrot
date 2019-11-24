@@ -12,9 +12,11 @@ class OrderItemInline(admin.StackedInline):
 @admin.register(Order)
 class OrderAdmin(admin.ModelAdmin):
     inlines = [OrderItemInline]
-    list_display = ('id', 'buyer_link', 'created', 'status')
-    list_filter = ('status', ('created', DateRangeFilter), ('products__seller', MultipleChoiceFieldListFilter))
+    list_display = ('id', 'buyer_link', 'seller_link', 'created', 'status')
+    list_filter = ('status', ('created', DateRangeFilter), ('buyer', MultipleChoiceFieldListFilter),
+                   ('seller', MultipleChoiceFieldListFilter))
     ordering = ('-created',)
     date_hierarchy = 'created'
 
     buyer_link = admin_link_field(Order, 'buyer')
+    seller_link = admin_link_field(Order, 'seller')
