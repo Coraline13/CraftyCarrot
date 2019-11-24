@@ -21,10 +21,12 @@ class SetOwnProfileMixin(serializers.Serializer):
         except AttributeError as e:
             raise ImproperlyConfigured("must set Meta.profile_field_name or override get_profile_field_name()") from e
 
-    def create(self, validated_data):
+    def get_profile_kwargs(self):
         user = self.context['request'].user
-        related_objects = {self.get_profile_field_name(): user.profile}
-        validated_data.update(related_objects)
+        return {self.get_profile_field_name(): user.profile}
+
+    def create(self, validated_data):
+        validated_data.update(self.get_profile_kwargs())
         return super().create(validated_data)
 
 
@@ -34,7 +36,8 @@ class ProductNestedSerializer(SetOwnProfileMixin, ModelSerializer):
 
     class Meta:
         model = Product
-        fields = ('id', 'category', 'category_name', 'seller', 'title', 'unit', 'unit_price', 'quantity')
+        fields = ('id', 'category', 'category_name', 'seller', 'title', 'unit',
+                  'unit_price', 'quantity', 'created', 'modified')
         read_only_fields = ('id', 'seller',)
         ref_name = None
         profile_field_name = 'seller'

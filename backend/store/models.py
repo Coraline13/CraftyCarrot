@@ -1,5 +1,8 @@
+from decimal import Decimal
+
 from adminsortable.models import SortableMixin
 from django.conf import settings
+from django.core.validators import MinValueValidator
 from django.db import models
 from phonenumber_field.modelfields import PhoneNumberField
 
@@ -43,8 +46,8 @@ class Product(CreatedModifiedMixin, models.Model):
     title = models.CharField(max_length=255)
     description = models.TextField(max_length=4096)
     unit = models.CharField(max_length=10)
-    unit_price = models.DecimalField(decimal_places=2, max_digits=10)
-    quantity = models.PositiveIntegerField()
+    unit_price = models.DecimalField(decimal_places=2, max_digits=10, validators=[MinValueValidator(Decimal('0.01'))])
+    quantity = models.PositiveIntegerField(validators=[MinValueValidator(1)])
 
     @property
     def owner(self):

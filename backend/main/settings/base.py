@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'import_export',
     'django_extensions',
+    'admin_numeric_filter',
 
     'allauth',
     'allauth.account',

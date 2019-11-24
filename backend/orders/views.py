@@ -12,7 +12,9 @@ class CartViewSet(mixins.CreateModelMixin, mixins.DestroyModelMixin, mixins.List
     lookup_field = 'product'
 
     def get_queryset(self):
-        return CartItem.objects.filter(profile=self.request.user.profile)
+        if self.request and self.request.user and self.request.user.is_authenticated:
+            return CartItem.objects.filter(profile=self.request.user.profile)
+        return super().get_queryset()
 
     def get_serializer_class(self):
         if self.action == 'list':

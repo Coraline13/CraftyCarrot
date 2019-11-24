@@ -26,3 +26,5 @@ ifaddr
 djangorestframework-recursive
 django-extensions
 pydot
+django-related-admin
+django-admin-numeric-filter
