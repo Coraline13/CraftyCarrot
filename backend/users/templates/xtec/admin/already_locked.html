@@ -1,0 +1,12 @@
+{% extends 'admin/change_form.html' %}
+{% load static %}
+{% load i18n %}
+{% block content %}
+	<h3>Already locked</h3>
+	<p>
+		This object is already locked for editing by {{ profile.calling_session.who_calls }}. Are you sure
+		you want to reassign it to yourself?
+	</p>
+
+	<a href="{{ change_link|safe }}">OF COURSE I'M FUCKING SURE</a>
+{% endblock %}
