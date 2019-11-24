@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'drf_yasg',
     'corsheaders',
     'import_export',
+    'django_extensions',
 
     'allauth',
     'allauth.account',

@@ -78,13 +78,6 @@ class UserAdminWithProfile(UserAdmin):
             messages.add_message(request, messages.INFO, 'An e-mail has been sent to %(email)s with instructions '
                                                          'for choosing a password.' % {'email': user.email})
 
-    def check_ldap_user(self, obj):
-        return obj.has_ldap_user()
-
-    check_ldap_user.boolean = True
-    check_ldap_user.short_description = 'from LDAP'
-    check_ldap_user.admin_order_field = 'is_from_ldap'
-
     def emailaddress_link(self, obj):
         email = obj.email
         if not email:
@@ -131,23 +124,6 @@ class UserAdminWithProfile(UserAdmin):
         qs = super().get_queryset(request)
         qs = qs.prefetch_related('emailaddress_set')
         return qs
-
-    @sensitive_post_parameters_m
-    def user_change_password(self, request, id, form_url=''):
-        user = self.get_object(request, unquote(id))
-        if user.has_ldap_user(request):
-            messages.error(request, 'Cannot set Django password for LDAP user. Contact the administrator.')
-            return HttpResponseRedirect(
-                reverse(
-                    '%s:%s_%s_change' % (
-                        self.admin_site.name,
-                        user._meta.app_label,
-                        user._meta.model_name,
-                    ),
-                    args=(user.pk,),
-                )
-            )
-        return super().user_change_password(request, id, form_url)
 
 
 class GroupAdminForm(ModelForm):

@@ -28,8 +28,6 @@ class AdminPasswordResetForm(auth_forms.PasswordResetForm):
             raise ValidationError('The specified user is blocked.', code='invalid')
         if not user.is_staff:
             raise ValidationError('The specified user is not a staff member.', code='invalid')
-        if user.has_ldap_user():
-            raise ValidationError('Cannot set Django password for LDAP user.', code='invalid')
 
         return [user]
 

@@ -24,3 +24,5 @@ django-import-export>=1.1.0
 tablib>=0.13.0
 ifaddr
 djangorestframework-recursive
+django-extensions
+pydot

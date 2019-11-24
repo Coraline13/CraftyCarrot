@@ -80,7 +80,6 @@ class User(AbstractUser):
     first_name = models.CharField(_('first name'), max_length=30, blank=True)
     last_name = models.CharField(_('last name'), max_length=150, blank=True)
     extra_confirmation_data = JSONField(blank=True, null=True, editable=False)
-    is_from_ldap = models.NullBooleanField('from LDAP', default=None)
 
     def get_full_name(self):
         return title(super().get_full_name())
